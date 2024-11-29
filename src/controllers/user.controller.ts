@@ -29,14 +29,25 @@ const getUser = async (req: Request, res: Response) => {
   }
 };
 
-const createUser = async (req: Request, res: Response) => {
+const deleteUser = async (req: Request, res: Response) => {
   try {
+    const { id } = req.params;
+    const user = await userService.deleteUserById(id);
+    res.json(user);
+  } catch (error) {
+    console.log(error);
+    if (error instanceof Error) {
+      res.status(500).json({ error: error.message });
+    } else res.status(500).json({ error: "Error de servidor" });
+  }
+};
+
+const updateUser = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
     const { email, password } = req.body;
-    const newUser = await userService.createUserWithEmailAndPassword(
-      email,
-      password
-    );
-    res.json(newUser);
+    const user = await userService.updateUserById(id, email, password);
+    res.json(user);
   } catch (error) {
     console.log(error);
     if (error instanceof Error) {
@@ -48,5 +59,6 @@ const createUser = async (req: Request, res: Response) => {
 export const userController = {
   getUsers,
   getUser,
-  createUser,
+  deleteUser,
+  updateUser,
 };

@@ -1,51 +1,38 @@
-import bcrypt from "bcryptjs";
-import { nanoid } from "nanoid";
-import { UserModel } from "../models/user.model";
+import { User } from "../models/user.model";
 
 const getAllUsers = async () => {
-  const users = await UserModel.readUsers();
+  const users = await User.findAll();
   return users;
 };
 
 const getUserById = async (id: string) => {
-  const users = await getAllUsers();
-  const user = users.find((item) => item.id === id);
+  const user = await User.findById(id);
   if (!user) throw new Error("User not found");
   return user;
 };
 
 const getUserByEmail = async (email: string) => {
-  const users = await getAllUsers();
-  const user = users.find((item) => item.email === email);
+  const user = await User.findOneByEmail(email);
   if (!user) throw new Error("User not found");
   return user;
 };
 
-const createUserWithEmailAndPassword = async (
-  email: string,
-  password: string
-) => {
-  const users = await getAllUsers();
-  const user = users.find((item) => item.email === email);
-  if (user) throw new Error("User already exists");
+const deleteUserById = async (id: string) => {
+  const user = await User.remove(id);
+  if (!user) throw new Error("User not found");
+  return user;
+};
 
-  const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(password, salt);
-
-  const newUser = {
-    id: nanoid(),
-    email,
-    password: hashedPassword,
-  };
-
-  users.push(newUser);
-  await UserModel.writeUsers(users);
-  return newUser;
+const updateUserById = async (id: string, email: string, password: string) => {
+  const user = await User.update(id, email, password);
+  if (!user) throw new Error("User not found");
+  return user;
 };
 
 export const userService = {
   getAllUsers,
   getUserById,
   getUserByEmail,
-  createUserWithEmailAndPassword,
+  deleteUserById,
+  updateUserById,
 };

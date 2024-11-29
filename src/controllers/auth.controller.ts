@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { authService } from "../services/auth.service";
-import { userService } from "../services/user.service";
 
 const login = async (req: Request, res: Response) => {
   try {
@@ -18,7 +17,7 @@ const login = async (req: Request, res: Response) => {
 const register = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
-    const newUser = await userService.createUserWithEmailAndPassword(
+    const newUser = await authService.createUserWithEmailAndPassword(
       email,
       password
     );

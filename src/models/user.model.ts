@@ -1,22 +1,69 @@
-import { readFile, writeFile } from "node:fs/promises";
-import path from "node:path";
-import { User } from "../interfaces/user.interface";
+import { pool } from "../config/database";
 
-const __dirname = import.meta.dirname;
-const pathFile = path.resolve(__dirname, "../../data/users.json");
+const create = async (email: string, password: string) => {
+  const query = {
+    text: "INSERT INTO users(email, password) VALUES($1, $2) RETURNING *",
+    values: [email, password],
+  };
 
-const readUsers = async () => {
-  const usersJSON = await readFile(pathFile, "utf-8");
-  const users = JSON.parse(usersJSON);
-  return users as User[];
+  const { rows } = await pool.query(query);
+  return rows[0];
 };
 
-const writeUsers = async (users: User[]) => {
-  const usersJSON = JSON.stringify(users);
-  return await writeFile(pathFile, usersJSON);
+const findAll = async () => {
+  const query = {
+    text: "SELECT * FROM users",
+  };
+
+  const { rows } = await pool.query(query);
+  return rows;
 };
 
-export const UserModel = {
-  readUsers,
-  writeUsers,
+const findById = async (id: string) => {
+  const query = {
+    text: "SELECT * FROM users WHERE id = $1",
+    values: [id],
+  };
+
+  const { rows } = await pool.query(query);
+  return rows[0];
+};
+
+const findOneByEmail = async (email: string) => {
+  const query = {
+    text: "SELECT * FROM users WHERE email = $1",
+    values: [email],
+  };
+
+  const { rows } = await pool.query(query);
+  return rows[0];
+};
+
+const update = async (id: string, email: string, password: string) => {
+  const query = {
+    text: "UPDATE users SET email = $1, password = $2 WHERE id = $3 RETURNING *",
+    values: [email, password, id],
+  };
+
+  const { rows } = await pool.query(query);
+  return rows[0];
+};
+
+const remove = async (id: string) => {
+  const query = {
+    text: "DELETE FROM users WHERE id = $1 RETURNING *",
+    values: [id],
+  };
+
+  const { rows } = await pool.query(query);
+  return rows[0];
+};
+
+export const User = {
+  create,
+  findAll,
+  findById,
+  findOneByEmail,
+  update,
+  remove,
 };

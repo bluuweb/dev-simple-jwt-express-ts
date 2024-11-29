@@ -12,11 +12,10 @@ router.get("/", verifyToken, userController.getUsers);
 // leer un único usuario por id
 router.get("/:id", userController.getUser);
 
-// crear un usuario
-router.post("/", userController.createUser);
-
 // eliminar un usuario por id
+router.delete("/:id", userController.deleteUser);
 
 // actualizar un usuario por id
+router.put("/:id", userController.updateUser);
 
 export default router;
