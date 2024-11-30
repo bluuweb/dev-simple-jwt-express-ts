@@ -1,4 +1,5 @@
 import { pool } from "../config/database";
+import { User as IUser } from "../interfaces/user.interface";
 
 const create = async (email: string, password: string) => {
   const query = {
@@ -7,7 +8,7 @@ const create = async (email: string, password: string) => {
   };
 
   const { rows } = await pool.query(query);
-  return rows[0];
+  return rows[0] as IUser;
 };
 
 const findAll = async () => {
@@ -16,7 +17,7 @@ const findAll = async () => {
   };
 
   const { rows } = await pool.query(query);
-  return rows;
+  return rows as IUser[];
 };
 
 const findById = async (id: string) => {
@@ -26,7 +27,7 @@ const findById = async (id: string) => {
   };
 
   const { rows } = await pool.query(query);
-  return rows[0];
+  return rows[0] as IUser;
 };
 
 const findOneByEmail = async (email: string) => {
@@ -36,7 +37,7 @@ const findOneByEmail = async (email: string) => {
   };
 
   const { rows } = await pool.query(query);
-  return rows[0];
+  return rows[0] as IUser;
 };
 
 const update = async (id: string, email: string, password: string) => {
@@ -46,7 +47,7 @@ const update = async (id: string, email: string, password: string) => {
   };
 
   const { rows } = await pool.query(query);
-  return rows[0];
+  return rows[0] as IUser;
 };
 
 const remove = async (id: string) => {
@@ -56,7 +57,7 @@ const remove = async (id: string) => {
   };
 
   const { rows } = await pool.query(query);
-  return rows[0];
+  return rows[0] as IUser;
 };
 
 export const User = {
